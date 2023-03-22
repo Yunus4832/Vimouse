@@ -1,1 +1,1 @@
-E:\vimouse\venv\Scripts\pyinstaller.exe --clean --noconfirm --onedir --windowed --name "vimouse" --icon "E:/vimouse/logo.ico"   --add-data "E:/vimouse/src/utils;utils/" --paths "E:/vimouse/venv/Lib/site-packages" --distpath "E:/vimouse/dist/" --hidden-import=json --debug=imports  -F "E:/vimouse/src/vimouse.py"
+.\venv\Scripts\pyinstaller.exe --clean --noconfirm --onedir --windowed --name "vimouse" --icon "./logo.ico"   --add-data "./src/utils;utils/" --paths "./venv/Lib/site-packages" --distpath "./dist/" --hidden-import=json --debug=imports  -F "./src/vimouse.py"

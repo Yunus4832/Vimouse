@@ -1,5 +1,4 @@
 from threading import Thread
-from time import sleep
 from tkinter import *
 
 
@@ -46,9 +45,4 @@ class Toast(Thread):
 
 # 测试模块
 if __name__ == "__main__":
-    toast = Toast()
-    toast.message = "test"
-    toast.start()
-    sleep(1)
-    toast.message = "test2"
-    sleep(5)
+    print("GuiUtils Module")

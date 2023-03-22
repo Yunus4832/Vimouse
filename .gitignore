@@ -1,5 +1,6 @@
 /dist
-__pycache__/
-build/
-.idea
+/build
+/venv
+/__pycache__
+/.idea
 *.spec
