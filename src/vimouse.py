@@ -4,7 +4,7 @@ from queue import Queue
 from threading import Thread, Event
 from time import sleep
 from typing import Tuple, Callable
-from src.component import KeyboardInterceptor, SpeedRecord, KeyTranslator
+from component import KeyboardInterceptor, SpeedRecord, KeyTranslator
 from utils.commonUtils import execInThread, Timer, FileLock
 
 import re
