@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import threading
 from enum import Enum
 from queue import Queue
 from threading import Thread, Event
@@ -6,6 +7,7 @@ from time import sleep
 from typing import Tuple, Callable
 from component import KeyboardInterceptor, SpeedRecord, KeyTranslator
 from utils.commonUtils import execInThread, Timer, FileLock
+from utils.guiUtils import Toast
 
 import re
 import sys
@@ -357,9 +359,12 @@ class ActionHandler(Thread):
         self.__moveSet = moveSet
         self.__pressedKeySet = pressedKeySet
         self.__speedRecord = speedRecord
+        self.daemon = True
+        self.name = "ActionHandler"
+        self.__isRunning = True
 
     def run(self):
-        while True:
+        while self.__isRunning:
             if len(self.__moveSet) == 0:
                 self.__moveSignal.clear()
                 self.__moveSignal.wait()
@@ -387,6 +392,9 @@ class ActionHandler(Thread):
             if action.actionType == 2:
                 action.exec(action.param[0])
                 sleep(0.1)
+
+    def stop(self):
+        self.__isRunning = False
 
 
 class Controller(Thread):
@@ -423,6 +431,7 @@ class Controller(Thread):
                 "_c_\r": self.clickMiddle,
                 "_a_\r": self.clickRight,
                 "_a_\t": self.taskToggle,
+                "_c_\t": self.tabToggle,
                 "j": self.moveDown,
                 "k": self.moveUP,
                 "h": self.moveLeft,
@@ -434,6 +443,7 @@ class Controller(Thread):
                 "_c_a": self.speedMin,
                 "_a_a": self.speedMax,
                 "a": self.speedDown,
+                ":": self.command,
                 "i": self.insert,
                 "_s_i": self.insertWithClick,
                 "v": self.visual,
@@ -482,7 +492,9 @@ class Controller(Thread):
                 "zb": self.goBottom
             },
             Mode.INSERT: {},
-            Mode.COMMAND: {}
+            Mode.COMMAND: {
+                "q": self.stop
+            }
         }
         # 自定义按键映射
         self.__customKeyMap = {}
@@ -498,6 +510,9 @@ class Controller(Thread):
         self.__timer = Timer()
         # 命令重复次数
         self.__commandTimes = 1
+        # 消息显示 Toast
+        screenSize = SystemBase.getScreenSize()
+        self.__toast = Toast(positionX=0, positionY=int(screenSize[1] * 0.9), width=screenSize[0], height=30)
 
         # 键盘拦截器
         self.__keyboardInterceptor = KeyboardInterceptor(self.__actionQueue, self.__pressedKeySet, self.__stopSet)
@@ -513,27 +528,42 @@ class Controller(Thread):
             self.__pressedKeySet,
             self.__speedRecord
         )
+        # 是否退出标志
+        self.__isRunning = True
+        self.name = "Controller"
 
     def run(self):
         self.__keyboardInterceptor.start()
         self.__actionHandler.start()
-        while True:
+        self.__toast.start()
+        while self.__isRunning:
             if self.__keyboardInterceptor.isEnable():
                 if self.__timer.isRun():
-                    key = KeyTranslator.getKeyValue(self.__actionQueue.get())
-                    cmd = self.__matchCommand("", key)
-                    if cmd not in self.__keyMaps[self.__mode] or self.__keyMaps[self.__mode][cmd] is None:
+                    if self.__mode == Mode.NORMAL or self.__mode == Mode.VISUAL or self.__mode == Mode.SELECT:
+                        key = KeyTranslator.getKeyValue(self.__actionQueue.get())
+                        cmd = self.__matchCommand("", key)
+                        if cmd not in self.__keyMaps[self.__mode] or self.__keyMaps[self.__mode][cmd] is None:
+                            continue
+                        self.__keyMaps[self.__mode][cmd]()
+                        self.__timer.reset()
                         continue
-                    self.__keyMaps[self.__mode][cmd]()
-                    self.__timer.reset()
-                    continue
+                    if self.__mode == Mode.COMMAND:
+                        cmd = self.__getCommand()
+                        if cmd in self.__keyMaps[self.__mode] and self.__keyMaps[self.__mode][cmd] is not None:
+                            self.__keyMaps[self.__mode][cmd]()
+                        else:
+                            self.__msg("command not found")
+                        self.__timer.reset()
+                        self.__mode = Mode.NORMAL
+                        continue
+
                 else:
                     self.__mode = Mode.INSERT
                     self.__keyboardInterceptor.pause()
                     self.__pressedKeySet.clear()
                 continue
             if 20 in self.__stopSet:
-                self.__mode = Mode.NORMAL
+                self.normal()
                 self.__timer = Timer(self.__normalTimeout)
                 self.__timer.start()
                 self.__stopSet.clear()
@@ -546,7 +576,7 @@ class Controller(Thread):
         在鼠标当前位置做标记
         """
         key = self.__actionQueue.get()
-        keyChar = chr(KeyTranslator.vk2Char(key)[0]).upper()
+        keyChar = KeyTranslator.vk2Char(key).upper()
         markName = self.__name[keyChar]
         pos = SystemBase.getPosition()
         self.__mark[markName] = pos
@@ -556,7 +586,7 @@ class Controller(Thread):
         将鼠标移动到指定标记
         """
         key = self.__actionQueue.get()
-        keyChar = chr(KeyTranslator.vk2Char(key)[0]).upper()
+        keyChar = KeyTranslator.vk2Char(key).upper()
         markName = self.__name[keyChar] if keyChar in self.__name else None
         if markName is None:
             return
@@ -644,7 +674,11 @@ class Controller(Thread):
         self.__speedRecord.speedDown()
 
     def stop(self):
-        pass
+        """
+        退出 Vimouse
+        """
+        self.__toast.quit()
+        self.__isRunning = False
 
     def visual(self):
         """
@@ -665,6 +699,19 @@ class Controller(Thread):
         self.__keyboardInterceptor.pause()
         self.__pressedKeySet.clear()
         self.__timer.stop()
+
+    def command(self):
+        """
+        进入命令模式
+        """
+        self.__mode = Mode.COMMAND
+        self.__toast.show()
+
+    def normal(self):
+        """
+        进入普通模式
+        """
+        self.__mode = Mode.NORMAL
 
     def insertWithClick(self):
         """
@@ -691,6 +738,9 @@ class Controller(Thread):
         self.selectItem()
 
     def taskToggle(self):
+        """
+        Windows 任务切换
+        """
         self.__keyboardInterceptor.pause()
         SystemBase.keyDown("alt")
         SystemBase.hotkey("tab")
@@ -699,6 +749,23 @@ class Controller(Thread):
             sleep(0.1)
             continue
         SystemBase.keyUp("alt")
+        self.__timer = Timer(self.__normalTimeout)
+        self.__timer.start()
+        self.__stopSet.clear()
+        self.__keyboardInterceptor.goon()
+
+    def tabToggle(self):
+        """
+        Windows Tab 切换
+        """
+        self.__keyboardInterceptor.pause()
+        SystemBase.keyDown("ctrl")
+        SystemBase.hotkey("tab")
+        self.__stopSet.add(162)
+        while 162 in self.__stopSet or 163 in self.__stopSet:
+            sleep(0.1)
+            continue
+        SystemBase.keyUp("ctrl")
         self.__timer = Timer(self.__normalTimeout)
         self.__timer.start()
         self.__stopSet.clear()
@@ -814,6 +881,9 @@ class Controller(Thread):
         SystemBase.clickMiddle()
 
     def __getKeyAction(self) -> list:
+        """
+        获得 key 的按键序列
+        """
         key = self.__actionQueue.get()
         result = []
         if key[1][0]:
@@ -822,7 +892,7 @@ class Controller(Thread):
             result.append("shift")
         if key[1][2]:
             result.append("alt")
-        result.append(chr(KeyTranslator.vk2Char(key)[0]))
+        result.append(KeyTranslator.vk2Char(key).lower())
         return result
 
     def __pressKey(self, *key: str, times: int = 1):
@@ -832,7 +902,7 @@ class Controller(Thread):
 
     def __matchCommand(self, first: str, second: str) -> str:
         """
-        通过递归的方式匹配命令
+        通过递归的方式匹配按键映射
         """
         temp = first + second
         pattern = re.compile('^"|\'' + temp)
@@ -842,6 +912,37 @@ class Controller(Thread):
             key = KeyTranslator.getKeyValue(self.__actionQueue.get())
             return self.__matchCommand(temp, key)
         return temp
+
+    def __getCommand(self) -> str:
+        """
+        从用户输入获取命令
+        """
+        cmd = ""
+        self.__toast.show()
+        while True:
+            key = self.__actionQueue.get()
+            keyChar = KeyTranslator.vk2Char(key)
+            if keyChar == "\r":
+                self.__toast.send("")
+                break
+            if keyChar == "\x08":
+                cmd = cmd[0:len(cmd) - 1]
+            else:
+                cmd = cmd + keyChar
+            self.__toast.send(cmd)
+        self.__toast.hide()
+        return cmd
+
+    @execInThread
+    def __msg(self, msg: str):
+        """
+        显示一条提示信息
+        """
+        self.__toast.show()
+        self.__toast.send(msg)
+        sleep(2)
+        self.__toast.send("")
+        self.__toast.hide()
 
 
 # 启动代码
@@ -854,3 +955,6 @@ if __name__ == "__main__":
         sys.exit()
     controller = Controller()
     controller.start()
+    controller.join()
+    lock.release()
+    sys.exit()

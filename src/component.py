@@ -23,6 +23,8 @@ class KeyboardInterceptor(Thread):
         self.__isPressCtrl = False
         self.__isPressAlt = False
         self.__enable = False
+        self.name = "KeyboardInterceptor"
+        self.daemon = True
 
     def run(self) -> None:
         with keyboard.Listener(win32_event_filter=self.__filter, suppress=False) as self.__listener:
@@ -41,6 +43,7 @@ class KeyboardInterceptor(Thread):
         self.__isPressCtrl = False
         self.__isPressAlt = False
         self.__enable = False
+        self.__pressedKeys.clear()
         self.__pauseSemaphore.release()
 
     def goon(self) -> None:
@@ -238,8 +241,10 @@ class KeyTranslator:
     }
 
     @classmethod
-    def vk2Char(cls, key: Tuple[int, tuple]) -> Tuple[int, tuple]:
-        # 所有输入的字母都转成小写字母, 方便统一按键和按键序列的表示
+    def vk2Ascii(cls, key: Tuple[int, tuple]) -> Tuple[int, tuple]:
+        """
+        获取虚拟键所代表字符的 ASCII 码, 所有输入的字母都转成小写字母, 方便统一按键和按键序列的表示
+        """
         if 65 <= key[0] <= 91:
             asciiCode = key[0] + 32
             return asciiCode, key[1]
@@ -248,11 +253,29 @@ class KeyTranslator:
 
     @classmethod
     def getKeyValue(cls, key: Tuple[int, tuple]) -> str:
-        temp = cls.vk2Char(key)
+        """
+        获得 key 的键值，用于执行操作
+        """
+        temp = cls.vk2Ascii(key)
         ctrl_key = "_c_" if temp[1][0] else ""
-        shift_key = "_s_" if temp[1][1] else ""
         alt_key = "_a_" if temp[1][2] else ""
+        shift_key = ""
+        if 97 <= temp[0] <= 123 or temp[0] in [8, 9, 13, 20, 27, 32]:
+            shift_key = "_s_" if temp[1][1] else ""
         return ctrl_key + shift_key + alt_key + chr(temp[0])
+
+    @classmethod
+    def vk2Char(cls, key: Tuple[int, tuple]) -> str:
+        """
+        获取虚拟键所代表字符
+        """
+        if 65 <= key[0] <= 91:
+            if not key[1][1]:
+                asciiCode = key[0] + 32
+                return chr(asciiCode)
+            asciiCode = key[0]
+            return chr(asciiCode)
+        return chr(cls.__vk2charMap[(key[0], key[1][1])])
 
 
 class SpeedRecord(Thread):
@@ -272,10 +295,13 @@ class SpeedRecord(Thread):
         }
         self.__speedList = [key for key in self.__speedMap]
         self.__position = 0
+        self.__isRunning = True
+        self.daemon = True
+        self.name = "SpeedRecord"
         self.start()
 
     def run(self):
-        while True:
+        while self.__isRunning:
             self.__semaphore.acquire()
             self.__count = (self.__count + 1) % self.__timeout
             self.__semaphore.release()
@@ -330,6 +356,12 @@ class SpeedRecord(Thread):
         self.__semaphore.acquire()
         self.__count = 0
         self.__semaphore.release()
+
+    def stop(self):
+        """
+        停止线程
+        """
+        self.__isRunning = False
 
 
 if __name__ == "__main__":

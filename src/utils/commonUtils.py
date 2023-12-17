@@ -56,20 +56,22 @@ class Timer(Thread):
         self.__timerSemaphore = Semaphore(1)
         self.__timeout = timeout
         self.__count = timeout
-        self.__isRun = True
+        self.__isRunning = True
         self.__func = None
         self.__args = None
         self.__kwargs = None
+        self.name = "Timer"
+        self.daemon = True
 
     def run(self):
-        while self.__isRun:
+        while self.__isRunning:
             if self.__count <= 0:
                 break
             self.__timerSemaphore.acquire()
             self.__count -= 1
             self.__timerSemaphore.release()
             sleep(1)
-        self.__isRun = False
+        self.__isRunning = False
         if self.__func is not None:
             self.__func(*self.__args, **self.__kwargs)
 
@@ -88,10 +90,10 @@ class Timer(Thread):
         self.__timerSemaphore.release()
 
     def isRun(self) -> bool:
-        return self.__isRun
+        return self.__isRunning
 
     def stop(self) -> None:
-        self.__isRun = False
+        self.__isRunning = False
 
 
 if __name__ == "__main__":
