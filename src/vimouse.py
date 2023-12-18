@@ -556,7 +556,6 @@ class Controller(Thread):
                         self.__timer.reset()
                         self.__mode = Mode.NORMAL
                         continue
-
                 else:
                     self.__mode = Mode.INSERT
                     self.__keyboardInterceptor.pause()

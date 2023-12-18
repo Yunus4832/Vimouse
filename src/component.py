@@ -2,8 +2,9 @@ from queue import Queue
 from threading import Thread, Semaphore
 from time import sleep
 from typing import Tuple
-
 from pynput import keyboard
+
+import pyautogui
 
 
 class KeyboardInterceptor(Thread):
@@ -45,6 +46,10 @@ class KeyboardInterceptor(Thread):
         self.__enable = False
         self.__pressedKeys.clear()
         self.__pauseSemaphore.release()
+        # 修复功能键同 CapsLock 一同按下导致的回到 Insert 模式而功能键不释放的问题
+        pyautogui.keyUp("ctrl")
+        pyautogui.keyUp("alt")
+        pyautogui.keyUp("shift")
 
     def goon(self) -> None:
         """
