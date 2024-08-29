@@ -12,12 +12,12 @@ class KeyboardInterceptor(Thread):
     全局的键盘按键拦截器
     """
 
-    def __init__(self, actionQueue: Queue, pressedKeySet: set, stopSet: set):
+    def __init__(self, actionQueue: Queue[Tuple[int, Tuple[int, int, int]]], pressedKeySet: set[int], stopSet: set[int]):
         super().__init__()
-        self.__actionQueue = actionQueue
-        self.__pressedKeys = pressedKeySet
+        self.__actionQueue: Queue[Tuple[int, Tuple[int, int, int]]] = actionQueue
+        self.__pressedKeys: set[int] = pressedKeySet
+        self.__stopSet: set[int] = stopSet
         self.__pauseSemaphore = Semaphore(1)
-        self.__stopSet = stopSet
         self.__listener = None
         self.__isPressShift = False
         self.__isPressMeta = False

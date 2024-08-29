@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-import threading
 from enum import Enum
 from queue import Queue
 from threading import Thread, Event
@@ -24,7 +23,7 @@ ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("Vimouse")
 #   - [x] ~~右键菜单连续移动~~
 #   - [x] 选择模式 esc || q 退出后回到普通模式
 # - [ ] 鼠标分区块移动功能
-# - [ ] 实现命令模式
+# - [x] 实现命令模式
 # - [ ] 状态栏显示状态
 # - [ ] 历史命令记录
 # - [ ] 寄存器实现
@@ -439,7 +438,6 @@ class Controller(Thread):
                 "_a_j": self.scrollDown,
                 "_a_k": self.scrollUp,
                 "_a_h": self.scrollLeft,
-                "_a_l": self.scrollRight,
                 "_c_a": self.speedMin,
                 "_a_a": self.speedMax,
                 "a": self.speedDown,
@@ -499,13 +497,13 @@ class Controller(Thread):
         # 自定义按键映射
         self.__customKeyMap = {}
         # 用于接收键盘拦截器传过来的按键
-        self.__actionQueue = Queue()
+        self.__actionQueue: Queue[Tuple[int, Tuple[int, int, int]]] = Queue()
         # 用于记录即将要触发的鼠标动作集合
-        self.__moveKeySet = set()
+        self.__moveKeySet: set[Action] = set()
         # 用于存储键盘上持续按下的按键集合
-        self.__pressedKeySet = set()
+        self.__pressedKeySet: set[int] = set()
         # 用于存放停止监听键盘时的按键集合
-        self.__stopSet = set()
+        self.__stopSet: set[int] = set()
         # 定时器，用于超时后自动退出到插入模式
         self.__timer = Timer()
         # 命令重复次数
@@ -539,10 +537,21 @@ class Controller(Thread):
         while self.__isRunning:
             if self.__keyboardInterceptor.isEnable():
                 if self.__timer.isRun():
-                    if self.__mode == Mode.NORMAL or self.__mode == Mode.VISUAL or self.__mode == Mode.SELECT:
+                    if self.__mode == Mode.NORMAL or self.__mode == Mode.VISUAL:
                         key = KeyTranslator.getKeyValue(self.__actionQueue.get())
                         cmd = self.__matchCommand("", key)
                         if cmd not in self.__keyMaps[self.__mode] or self.__keyMaps[self.__mode][cmd] is None:
+                            continue
+                        self.__keyMaps[self.__mode][cmd]()
+                        self.__timer.reset()
+                        continue
+                    if self.__mode == Mode.SELECT:
+                        action = self.__actionQueue.get()
+                        key = KeyTranslator.getKeyValue(action)
+                        cmd = self.__matchCommand("", key)
+                        if cmd not in self.__keyMaps[self.__mode] or self.__keyMaps[self.__mode][cmd] is None:
+                            keyList = self.__getKeyAction(action)
+                            self.__pressKey(*keyList)
                             continue
                         self.__keyMaps[self.__mode][cmd]()
                         self.__timer.reset()
@@ -561,6 +570,8 @@ class Controller(Thread):
                     self.__keyboardInterceptor.pause()
                     self.__pressedKeySet.clear()
                 continue
+
+            # 在 Insert 模式下, 按下 Caps-Lock 后, 再次进入 Normal 模式
             if 20 in self.__stopSet:
                 self.normal()
                 self.__timer = Timer(self.__normalTimeout)
@@ -879,29 +890,30 @@ class Controller(Thread):
         """
         SystemBase.clickMiddle()
 
-    def __getKeyAction(self) -> list:
+    def __getKeyAction(self, action: Tuple[int, Tuple[int, int, int]]) -> list:
         """
         获得 key 的按键序列
         """
-        key = self.__actionQueue.get()
+        if action is None:
+            action = self.__actionQueue.get()
         result = []
-        if key[1][0]:
+        if action[1][0]:
             result.append("ctrl")
-        if key[1][1]:
+        if action[1][1]:
             result.append("shift")
-        if key[1][2]:
+        if action[1][2]:
             result.append("alt")
-        result.append(KeyTranslator.vk2Char(key).lower())
+        result.append(KeyTranslator.vk2Char(action).lower())
         return result
 
-    def __pressKey(self, *key: str, times: int = 1):
+    def __pressKey(self, *keys: str, times: int = 1):
         self.__keyboardInterceptor.pause()
-        SystemBase.hotkey(*key, times=times)
+        SystemBase.hotkey(*keys, times=times)
         self.__keyboardInterceptor.goon()
 
     def __matchCommand(self, first: str, second: str) -> str:
         """
-        通过递归的方式匹配按键映射
+        通过递归的方式匹配按键映)射
         """
         temp = first + second
         pattern = re.compile('^"|\'' + temp)
