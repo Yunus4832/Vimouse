@@ -8,7 +8,7 @@ from typing import Callable
 from portalocker.exceptions import AlreadyLocked
 
 
-def execInThread(func):
+def exec_in_thread(func):
     """
     让方法在一个新线程中执行的修饰器
     """
@@ -53,10 +53,10 @@ class Timer(Thread):
 
     def __init__(self, timeout: int = 60):
         super(Timer, self).__init__()
-        self.__timerSemaphore = Semaphore(1)
+        self.__timer_semaphore = Semaphore(1)
         self.__timeout = timeout
         self.__count = timeout
-        self.__isRunning = True
+        self.__is_running = True
         self.__func = None
         self.__args = None
         self.__kwargs = None
@@ -64,18 +64,18 @@ class Timer(Thread):
         self.daemon = True
 
     def run(self):
-        while self.__isRunning:
+        while self.__is_running:
             if self.__count <= 0:
                 break
-            self.__timerSemaphore.acquire()
+            self.__timer_semaphore.acquire()
             self.__count -= 1
-            self.__timerSemaphore.release()
+            self.__timer_semaphore.release()
             sleep(1)
-        self.__isRunning = False
+        self.__is_running = False
         if self.__func is not None:
             self.__func(*self.__args, **self.__kwargs)
 
-    def setFunc(self, func: Callable, *args: any, **kwargs: any) -> None:
+    def set_func(self, func: Callable, *args: any, **kwargs: any) -> None:
         self.__func = func
         self.__args = args
         self.__kwargs = kwargs
@@ -85,15 +85,15 @@ class Timer(Thread):
         self.__count = self.__timeout
 
     def reset(self) -> None:
-        self.__timerSemaphore.acquire()
+        self.__timer_semaphore.acquire()
         self.__count = self.__timeout
-        self.__timerSemaphore.release()
+        self.__timer_semaphore.release()
 
     def isRun(self) -> bool:
-        return self.__isRunning
+        return self.__is_running
 
     def stop(self) -> None:
-        self.__isRunning = False
+        self.__is_running = False
 
 
 if __name__ == "__main__":

@@ -5,8 +5,8 @@ from threading import Thread, Event
 from time import sleep
 from typing import Tuple, Callable
 from component import KeyboardInterceptor, SpeedRecord, KeyTranslator
-from utils.commonUtils import execInThread, Timer, FileLock
-from utils.guiUtils import Toast
+from utils.common_utils import exec_in_thread, Timer, FileLock
+from utils.gui_utils import Toast
 
 import re
 import sys
@@ -93,14 +93,14 @@ class SystemBase:
     """
 
     @classmethod
-    def getPosition(cls) -> tuple:
+    def get_position(cls) -> tuple:
         """
         获取屏幕鼠标位置
         """
         return pyautogui.position()
 
     @classmethod
-    def moveTo(cls, x, y, during: float = 0.1) -> None:
+    def move_to(cls, x, y, during: float = 0.1) -> None:
         """
         跳转到屏幕位置
         :param x:  x 轴坐标
@@ -110,7 +110,7 @@ class SystemBase:
         pyautogui.moveTo(int(x), int(y), during)
 
     @classmethod
-    def getScreenSize(cls) -> Tuple[int, int]:
+    def get_screen_size(cls) -> Tuple[int, int]:
         """
         获取屏幕尺寸
         :return: 返回屏幕尺寸的元组 (x, y)
@@ -118,8 +118,8 @@ class SystemBase:
         return pyautogui.size()
 
     @classmethod
-    @execInThread
-    def moveUp(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def move_up(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         向上移动
         :param distance: 移动次数，默认为 1 个单位
@@ -129,8 +129,8 @@ class SystemBase:
         pyautogui.move(0, -1 * offset * distance, during)
 
     @classmethod
-    @execInThread
-    def moveDown(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def move_down(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         向下移动
         :param distance: 移动次数，默认为 1 个单位
@@ -140,8 +140,8 @@ class SystemBase:
         pyautogui.move(0, offset * distance, during)
 
     @classmethod
-    @execInThread
-    def moveLeft(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def move_left(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         向左移动
         :param distance: 移动次数，默认为 1 个单位
@@ -151,8 +151,8 @@ class SystemBase:
         pyautogui.move(-1 * offset * distance, 0, during)
 
     @classmethod
-    @execInThread
-    def moveRight(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def move_right(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         向右移动
         :param distance: 移动次数，默认为 1 个单位
@@ -162,8 +162,8 @@ class SystemBase:
         pyautogui.move(offset * distance, 0, during)
 
     @classmethod
-    @execInThread
-    def scrollUp(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def scroll_up(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         滚轮上滚
         :param distance: 移动次数，默认为 1 个单位
@@ -173,8 +173,8 @@ class SystemBase:
         pyautogui.scroll(offset * distance, during)
 
     @classmethod
-    @execInThread
-    def scrollDown(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def scroll_down(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         滚轮下滚
         :param distance: 移动次数，默认为 1 个单位
@@ -184,8 +184,8 @@ class SystemBase:
         pyautogui.scroll(-1 * offset * distance, during)
 
     @classmethod
-    @execInThread
-    def scrollLeft(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def scroll_left(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         滚轮左移
         :param distance: 移动次数，默认为 1 个单位
@@ -195,8 +195,8 @@ class SystemBase:
         pyautogui.hscroll(offset * distance, during)
 
     @classmethod
-    @execInThread
-    def scrollRight(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
+    @exec_in_thread
+    def scroll_right(cls, distance: int = 1, offset: int = 10, during: float = 0.1) -> None:
         """
         滚轮右移
         :param distance: 移动次数，默认为 1 个单位
@@ -206,38 +206,38 @@ class SystemBase:
         pyautogui.hscroll(-1 * offset * distance, during)
 
     @classmethod
-    @execInThread
-    def clickLeft(cls) -> None:
+    @exec_in_thread
+    def click_left(cls) -> None:
         """
         点击鼠标左键
         """
         pyautogui.leftClick()
 
     @classmethod
-    @execInThread
-    def clickRight(cls) -> None:
+    @exec_in_thread
+    def click_right(cls) -> None:
         """
         点击鼠标右键
         """
         pyautogui.rightClick()
 
     @classmethod
-    @execInThread
-    def clickMiddle(cls) -> None:
+    @exec_in_thread
+    def click_middle(cls) -> None:
         """
         点击鼠标中键
         """
         pyautogui.middleClick()
 
     @classmethod
-    def pressPrimary(cls) -> None:
+    def press_primary(cls) -> None:
         """
         按住鼠标左键
         """
         pyautogui.mouseDown()
 
     @classmethod
-    def releasePrimary(cls) -> None:
+    def release_primary(cls) -> None:
         """
         释放鼠标左键
         """
@@ -268,7 +268,7 @@ class SystemBase:
             pyautogui.hotkey(*hotkeys)
 
     @classmethod
-    def keyDown(cls, key: str) -> None:
+    def key_down(cls, key: str) -> None:
         """
         按下键盘中的一个按键不释放
         :param key: 需要按下的按键
@@ -276,7 +276,7 @@ class SystemBase:
         pyautogui.keyDown(key)
 
     @classmethod
-    def keyUp(cls, key: str) -> None:
+    def key_up(cls, key: str) -> None:
         """
         释放键盘中的一个按键不释放
         :param key: 需要释放的按键
@@ -289,14 +289,14 @@ class Action(Enum):
     动作枚举
     """
     # 移动 action
-    MOVE_LEFT = ("move_left", SystemBase.moveLeft, (72,), 1, (1,))
-    MOVE_RIGHT = ("move_right", SystemBase.moveRight, (76,), 1, (1,))
-    MOVE_UP = ("move_up", SystemBase.moveUp, (75,), 1, (1,))
-    MOVE_DOWN = ("move_down", SystemBase.moveDown, (74,), 1, (1,))
-    SCROLL_UP = ("scroll_up", SystemBase.scrollUp, (66, 75), 1, (1,))
-    SCROLL_DOWN = ("scroll_down", SystemBase.scrollDown, (70, 74), 1, (1,))
-    SCROLL_LEFT = ("scroll_left", SystemBase.scrollLeft, (76,), 1, (1,))
-    SCROLL_RIGHT = ("scroll_right", SystemBase.scrollRight, (72,), 1, (1,))
+    MOVE_LEFT = ("move_left", SystemBase.move_left, (72,), 1, (1,))
+    MOVE_RIGHT = ("move_right", SystemBase.move_right, (76,), 1, (1,))
+    MOVE_UP = ("move_up", SystemBase.move_up, (75,), 1, (1,))
+    MOVE_DOWN = ("move_down", SystemBase.move_down, (74,), 1, (1,))
+    SCROLL_UP = ("scroll_up", SystemBase.scroll_up, (66, 75), 1, (1,))
+    SCROLL_DOWN = ("scroll_down", SystemBase.scroll_down, (70, 74), 1, (1,))
+    SCROLL_LEFT = ("scroll_left", SystemBase.scroll_left, (76,), 1, (1,))
+    SCROLL_RIGHT = ("scroll_right", SystemBase.scroll_right, (72,), 1, (1,))
 
     # 按键映射 action
     NEXT = ("next", SystemBase.hotkey, (74,), 2, ("down",))
@@ -304,15 +304,15 @@ class Action(Enum):
     FORWARD = ("forward", SystemBase.hotkey, (76,), 2, ("right",))
     BACKWARD = ("backward", SystemBase.hotkey, (72,), 2, ("left",))
 
-    def __init__(self, name: str, action: Callable, relatedKey: tuple, actionType: int, param: tuple):
+    def __init__(self, name: str, action: Callable, related_key: tuple, action_type: int, param: tuple):
         self._name = name
         self._action = action
-        self._relatedKey = relatedKey
-        self._actionType = actionType
+        self._related_key = related_key
+        self._action_type = action_type
         self._param = param
 
     @property
-    def name(self) -> str:
+    def action_name(self) -> str:
         """
         名称
         """
@@ -326,18 +326,18 @@ class Action(Enum):
         return self._action
 
     @property
-    def relatedKey(self) -> tuple:
+    def related_key(self) -> tuple:
         """
         相关的 vk-code
         """
-        return self._relatedKey
+        return self._related_key
 
     @property
-    def actionType(self) -> int:
+    def action_type(self) -> int:
         """
         动作类型, 1 -> 移动, 2 -> 按键映射
         """
-        return self._actionType
+        return self._action_type
 
     @property
     def param(self) -> tuple:
@@ -352,40 +352,40 @@ class ActionHandler(Thread):
     Action 处理器
     """
 
-    def __init__(self, event: Event, moveSet: set, pressedKeySet: set, speedRecord: SpeedRecord):
+    def __init__(self, event: Event, move_set: set, pressed_key_set: set, speed_record: SpeedRecord):
         super().__init__()
-        self.__moveSignal = event
-        self.__moveSet = moveSet
-        self.__pressedKeySet = pressedKeySet
-        self.__speedRecord = speedRecord
+        self.__move_signal = event
+        self.__move_set = move_set
+        self.__pressed_key_set = pressed_key_set
+        self.__speed_record = speed_record
         self.daemon = True
         self.name = "ActionHandler"
-        self.__isRunning = True
+        self.__is_running = True
 
     def run(self):
-        while self.__isRunning:
-            if len(self.__moveSet) == 0:
-                self.__moveSignal.clear()
-                self.__moveSignal.wait()
+        while self.__is_running:
+            if len(self.__move_set) == 0:
+                self.__move_signal.clear()
+                self.__move_signal.wait()
             self.__move()
-            self.__moveSignal.clear()
-            self.__moveSignal.wait(0.01)
+            self.__move_signal.clear()
+            self.__move_signal.wait(0.01)
 
     def __move(self):
         # copy 防止 set 遍历时修改 set 导致的异常
-        for action in self.__moveSet.copy():
+        for action in self.__move_set.copy():
             flag = True
-            for keyCode in action.relatedKey:
-                if keyCode in self.__pressedKeySet:
+            for key_code in action.related_key:
+                if key_code in self.__pressed_key_set:
                     flag = False
                     break
             if flag:
-                self.__moveSet.discard(action)
+                self.__move_set.discard(action)
                 return
 
             # 如果类型是 1, 代表移动, 调用时需要附加速度
             if action.actionType == 1:
-                action.exec(action.param[0], self.__speedRecord.speed())
+                action.exec(action.param[0], self.__speed_record.speed())
 
             # 如果类型是 2, 代表按键映射
             if action.actionType == 2:
@@ -393,7 +393,7 @@ class ActionHandler(Thread):
                 sleep(0.1)
 
     def stop(self):
-        self.__isRunning = False
+        self.__is_running = False
 
 
 class Controller(Thread):
@@ -404,11 +404,11 @@ class Controller(Thread):
     def __init__(self):
         super().__init__()
         # 屏幕宽高
-        self.__screenWidth, self.__screenHeight = SystemBase.getScreenSize()
+        self.__screen_width, self.__screen_height = SystemBase.get_screen_size()
         # 默认所在的模式
         self.__mode = Mode.NORMAL
         # 进入普通模式的过期时间
-        self.__normalTimeout = 60
+        self.__normal_timeout = 60
         # 所有的寄存器
         self.__register = {key: "" for key in Name}
         # 所有的标记
@@ -419,75 +419,75 @@ class Controller(Thread):
         self.__name["'"] = Name.RECENT
         self.__name["`"] = Name.RECENT
         # 默认按键映射
-        self.__keyMaps = {
+        self.__key_maps = {
             Mode.NORMAL: {
-                "m": self.doMark,
-                "'": self.goMark,
-                "`": self.goMark,
-                "_c_b": self.scrollUp,
-                "_c_f": self.scrollDown,
-                "\r": self.clickLeft,
-                "_c_\r": self.clickMiddle,
-                "_a_\r": self.clickRight,
-                "_a_\t": self.taskToggle,
-                "_c_\t": self.tabToggle,
-                "j": self.moveDown,
-                "k": self.moveUP,
-                "h": self.moveLeft,
-                "l": self.moveRight,
-                "_a_j": self.scrollDown,
-                "_a_k": self.scrollUp,
-                "_a_h": self.scrollLeft,
-                "_c_a": self.speedMin,
-                "_a_a": self.speedMax,
-                "a": self.speedDown,
+                "m": self.do_mark,
+                "'": self.go_mark,
+                "`": self.go_mark,
+                "_c_b": self.scroll_up,
+                "_c_f": self.scroll_down,
+                "\r": self.click_left,
+                "_c_\r": self.click_middle,
+                "_a_\r": self.click_right,
+                "_a_\t": self.task_toggle,
+                "_c_\t": self.tab_toggle,
+                "j": self.move_down,
+                "k": self.move_up,
+                "h": self.move_left,
+                "l": self.move_right,
+                "_a_j": self.scroll_down,
+                "_a_k": self.scroll_up,
+                "_a_h": self.scroll_left,
+                "_c_a": self.speed_min,
+                "_a_a": self.speed_max,
+                "a": self.speed_down,
                 ":": self.command,
                 "i": self.insert,
-                "_s_i": self.insertWithClick,
+                "_s_i": self.insert_with_click,
                 "v": self.visual,
-                "s": self.selectItem,
-                "_a_ ": self.windowMenu,
-                "gg": self.goZero,
-                "gc": self.goCenter,
-                "ge": self.goEnd,
-                "zt": self.goTop,
-                "z\r": self.goTop,
-                "zz": self.goMiddle,
-                "zb": self.goBottom
+                "s": self.select_item,
+                "_a_ ": self.window_menu,
+                "gg": self.go_zero,
+                "gc": self.go_center,
+                "ge": self.go_end,
+                "zt": self.go_top,
+                "z\r": self.go_top,
+                "zz": self.go_middle,
+                "zb": self.go_bottom
             },
             Mode.SELECT: {
                 "j": self.next,
                 "k": self.previous,
                 "h": self.backward,
                 "l": self.forward,
-                "\r": self.confirmSelect,
-                "q": self.quitSelect,
-                "_s_q": self.quitSelectWithESC
+                "\r": self.confirm_select,
+                "q": self.quit_select,
+                "_s_q": self.quit_select_with_esc
             },
             Mode.VISUAL: {
-                "'": self.goMark,
-                "`": self.goMark,
-                "_c_b": self.scrollUp,
-                "_c_f": self.scrollDown,
-                "j": self.moveDown,
-                "k": self.moveUP,
-                "h": self.moveLeft,
-                "l": self.moveRight,
-                "_a_j": self.scrollDown,
-                "_a_k": self.scrollUp,
-                "_a_h": self.scrollLeft,
-                "_a_l": self.scrollRight,
-                "_c_a": self.speedMin,
-                "_a_a": self.speedMax,
-                "a": self.speedDown,
+                "'": self.go_mark,
+                "`": self.go_mark,
+                "_c_b": self.scroll_up,
+                "_c_f": self.scroll_down,
+                "j": self.move_down,
+                "k": self.move_up,
+                "h": self.move_left,
+                "l": self.move_right,
+                "_a_j": self.scroll_down,
+                "_a_k": self.scroll_up,
+                "_a_h": self.scroll_left,
+                "_a_l": self.scroll_right,
+                "_c_a": self.speed_min,
+                "_a_a": self.speed_max,
+                "a": self.speed_down,
                 "v": self.visual,
-                "gg": self.goZero,
-                "gc": self.goCenter,
-                "ge": self.goEnd,
-                "zt": self.goTop,
-                "z\r": self.goTop,
-                "zz": self.goMiddle,
-                "zb": self.goBottom
+                "gg": self.go_zero,
+                "gc": self.go_center,
+                "ge": self.go_end,
+                "zt": self.go_top,
+                "z\r": self.go_top,
+                "zz": self.go_middle,
+                "zb": self.go_bottom
             },
             Mode.INSERT: {},
             Mode.COMMAND: {
@@ -495,71 +495,71 @@ class Controller(Thread):
             }
         }
         # 自定义按键映射
-        self.__customKeyMap = {}
+        self.__custom_key_map = {}
         # 用于接收键盘拦截器传过来的按键
-        self.__actionQueue: Queue[Tuple[int, Tuple[int, int, int]]] = Queue()
+        self.__action_queue: Queue[Tuple[int, Tuple[int, int, int]]] = Queue()
         # 用于记录即将要触发的鼠标动作集合
-        self.__moveKeySet: set[Action] = set()
+        self.__move_key_set: set[Action] = set()
         # 用于存储键盘上持续按下的按键集合
-        self.__pressedKeySet: set[int] = set()
+        self.__pressed_key_set: set[int] = set()
         # 用于存放停止监听键盘时的按键集合
-        self.__stopSet: set[int] = set()
+        self.__stop_set: set[int] = set()
         # 定时器，用于超时后自动退出到插入模式
         self.__timer = Timer()
         # 命令重复次数
-        self.__commandTimes = 1
+        self.__command_times = 1
         # 消息显示 Toast
-        screenSize = SystemBase.getScreenSize()
-        self.__toast = Toast(positionX=0, positionY=int(screenSize[1] * 0.9), width=screenSize[0], height=30)
+        screen_size = SystemBase.get_screen_size()
+        self.__toast = Toast(position_x=0, position_y=int(screen_size[1] * 0.9), width=screen_size[0], height=30)
 
         # 键盘拦截器
-        self.__keyboardInterceptor = KeyboardInterceptor(self.__actionQueue, self.__pressedKeySet, self.__stopSet)
+        self.__keyboard_interceptor = KeyboardInterceptor(self.__action_queue, self.__pressed_key_set, self.__stop_set)
 
         # 控制移动的事件, 用于同步移动线程
-        self.__moveSignal = Event()
+        self.__move_signal = Event()
         # 速度控制器
-        self.__speedRecord = SpeedRecord()
+        self.__speed_record = SpeedRecord()
         # Action 处理器
-        self.__actionHandler = ActionHandler(
-            self.__moveSignal,
-            self.__moveKeySet,
-            self.__pressedKeySet,
-            self.__speedRecord
+        self.__action_handler = ActionHandler(
+            self.__move_signal,
+            self.__move_key_set,
+            self.__pressed_key_set,
+            self.__speed_record
         )
         # 是否退出标志
-        self.__isRunning = True
+        self.__is_running = True
         self.name = "Controller"
 
     def run(self):
-        self.__keyboardInterceptor.start()
-        self.__actionHandler.start()
+        self.__keyboard_interceptor.start()
+        self.__action_handler.start()
         self.__toast.start()
-        while self.__isRunning:
-            if self.__keyboardInterceptor.isEnable():
+        while self.__is_running:
+            if self.__keyboard_interceptor.is_enable():
                 if self.__timer.isRun():
                     if self.__mode == Mode.NORMAL or self.__mode == Mode.VISUAL:
-                        key = KeyTranslator.getKeyValue(self.__actionQueue.get())
-                        cmd = self.__matchCommand("", key)
-                        if cmd not in self.__keyMaps[self.__mode] or self.__keyMaps[self.__mode][cmd] is None:
+                        key = KeyTranslator.get_key_value(self.__action_queue.get())
+                        cmd = self.__match_command("", key)
+                        if cmd not in self.__key_maps[self.__mode] or self.__key_maps[self.__mode][cmd] is None:
                             continue
-                        self.__keyMaps[self.__mode][cmd]()
+                        self.__key_maps[self.__mode][cmd]()
                         self.__timer.reset()
                         continue
                     if self.__mode == Mode.SELECT:
-                        action = self.__actionQueue.get()
-                        key = KeyTranslator.getKeyValue(action)
-                        cmd = self.__matchCommand("", key)
-                        if cmd not in self.__keyMaps[self.__mode] or self.__keyMaps[self.__mode][cmd] is None:
-                            keyList = self.__getKeyAction(action)
-                            self.__pressKey(*keyList)
+                        action = self.__action_queue.get()
+                        key = KeyTranslator.get_key_value(action)
+                        cmd = self.__match_command("", key)
+                        if cmd not in self.__key_maps[self.__mode] or self.__key_maps[self.__mode][cmd] is None:
+                            key_list = self.__get_key_action(action)
+                            self.__press_key(*key_list)
                             continue
-                        self.__keyMaps[self.__mode][cmd]()
+                        self.__key_maps[self.__mode][cmd]()
                         self.__timer.reset()
                         continue
                     if self.__mode == Mode.COMMAND:
-                        cmd = self.__getCommand()
-                        if cmd in self.__keyMaps[self.__mode] and self.__keyMaps[self.__mode][cmd] is not None:
-                            self.__keyMaps[self.__mode][cmd]()
+                        cmd = self.__get_command()
+                        if cmd in self.__key_maps[self.__mode] and self.__key_maps[self.__mode][cmd] is not None:
+                            self.__key_maps[self.__mode][cmd]()
                         else:
                             self.__msg("command not found")
                         self.__timer.reset()
@@ -567,128 +567,128 @@ class Controller(Thread):
                         continue
                 else:
                     self.__mode = Mode.INSERT
-                    self.__keyboardInterceptor.pause()
-                    self.__pressedKeySet.clear()
+                    self.__keyboard_interceptor.pause()
+                    self.__pressed_key_set.clear()
                 continue
 
             # 在 Insert 模式下, 按下 Caps-Lock 后, 再次进入 Normal 模式
-            if 20 in self.__stopSet:
+            if 20 in self.__stop_set:
                 self.normal()
-                self.__timer = Timer(self.__normalTimeout)
+                self.__timer = Timer(self.__normal_timeout)
                 self.__timer.start()
-                self.__stopSet.clear()
-                self.__keyboardInterceptor.goon()
+                self.__stop_set.clear()
+                self.__keyboard_interceptor.goon()
                 continue
             sleep(0.05)
 
-    def doMark(self):
+    def do_mark(self):
         """
         在鼠标当前位置做标记
         """
-        key = self.__actionQueue.get()
-        keyChar = KeyTranslator.vk2Char(key).upper()
-        markName = self.__name[keyChar]
-        pos = SystemBase.getPosition()
-        self.__mark[markName] = pos
+        key = self.__action_queue.get()
+        key_char = KeyTranslator.vk_2_char(key).upper()
+        mark_name = self.__name[key_char]
+        pos = SystemBase.get_position()
+        self.__mark[mark_name] = pos
 
-    def goMark(self):
+    def go_mark(self):
         """
         将鼠标移动到指定标记
         """
-        key = self.__actionQueue.get()
-        keyChar = KeyTranslator.vk2Char(key).upper()
-        markName = self.__name[keyChar] if keyChar in self.__name else None
-        if markName is None:
+        key = self.__action_queue.get()
+        key_char = KeyTranslator.vk_2_char(key).upper()
+        mark_name = self.__name[key_char] if key_char in self.__name else None
+        if mark_name is None:
             return
-        pos = SystemBase.getPosition()
-        if markName is Name.RECENT:
-            SystemBase.moveTo(*self.__mark[markName])
+        pos = SystemBase.get_position()
+        if mark_name is Name.RECENT:
+            SystemBase.move_to(*self.__mark[mark_name])
             self.__mark[Name.RECENT] = pos
             return
         self.__mark[Name.RECENT] = pos
-        SystemBase.moveTo(*self.__mark[markName])
+        SystemBase.move_to(*self.__mark[mark_name])
 
-    def scrollUp(self):
+    def scroll_up(self):
         """
         滚轮向上滚动
         """
-        self.__moveKeySet.add(Action.SCROLL_UP)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.SCROLL_UP)
+        self.__move_signal.set()
 
-    def scrollDown(self):
+    def scroll_down(self):
         """
         滚轮向下滚动
         """
-        self.__moveKeySet.add(Action.SCROLL_DOWN)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.SCROLL_DOWN)
+        self.__move_signal.set()
 
-    def scrollLeft(self):
+    def scroll_left(self):
         """
         滚轮向上滚动
         """
-        self.__moveKeySet.add(Action.SCROLL_LEFT)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.SCROLL_LEFT)
+        self.__move_signal.set()
 
-    def scrollRight(self):
+    def scroll_right(self):
         """
         滚轮向下滚动
         """
-        self.__moveKeySet.add(Action.SCROLL_RIGHT)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.SCROLL_RIGHT)
+        self.__move_signal.set()
 
-    def moveDown(self):
+    def move_down(self):
         """
         鼠标下移
         """
-        self.__moveKeySet.add(Action.MOVE_DOWN)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.MOVE_DOWN)
+        self.__move_signal.set()
 
-    def moveUP(self):
+    def move_up(self):
         """
         鼠标上移
         """
-        self.__moveKeySet.add(Action.MOVE_UP)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.MOVE_UP)
+        self.__move_signal.set()
 
-    def moveLeft(self):
+    def move_left(self):
         """
         鼠标左移
         """
-        self.__moveKeySet.add(Action.MOVE_LEFT)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.MOVE_LEFT)
+        self.__move_signal.set()
 
-    def moveRight(self):
+    def move_right(self):
         """
         鼠标右移
         """
-        self.__moveKeySet.add(Action.MOVE_RIGHT)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.MOVE_RIGHT)
+        self.__move_signal.set()
 
-    def speedMax(self):
+    def speed_max(self):
         """
         将移动速度调整到最大
         """
-        self.__speedRecord.max()
+        self.__speed_record.max()
 
-    def speedMin(self):
+    def speed_min(self):
         """
         将移动速度调整到最小
         """
-        self.__speedRecord.min()
+        self.__speed_record.min()
 
-    def speedDown(self):
+    def speed_down(self):
         """
         减小移动速度
 
         """
-        self.__speedRecord.speedDown()
+        self.__speed_record.speed_down()
 
     def stop(self):
         """
         退出 Vimouse
         """
         self.__toast.quit()
-        self.__isRunning = False
+        self.__is_running = False
 
     def visual(self):
         """
@@ -696,9 +696,9 @@ class Controller(Thread):
         """
         if self.__mode != Mode.VISUAL:
             self.__mode = Mode.VISUAL
-            SystemBase.pressPrimary()
+            SystemBase.press_primary()
             return
-        SystemBase.releasePrimary()
+        SystemBase.release_primary()
         self.__mode = Mode.NORMAL
 
     def insert(self):
@@ -706,8 +706,8 @@ class Controller(Thread):
         进入插入模式
         """
         self.__mode = Mode.INSERT
-        self.__keyboardInterceptor.pause()
-        self.__pressedKeySet.clear()
+        self.__keyboard_interceptor.pause()
+        self.__pressed_key_set.clear()
         self.__timer.stop()
 
     def command(self):
@@ -723,113 +723,113 @@ class Controller(Thread):
         """
         self.__mode = Mode.NORMAL
 
-    def insertWithClick(self):
+    def insert_with_click(self):
         """
         点击左键并进入插入模式
         """
         self.__mode = Mode.INSERT
-        self.clickLeft()
-        self.__keyboardInterceptor.pause()
-        self.__pressedKeySet.clear()
+        self.click_left()
+        self.__keyboard_interceptor.pause()
+        self.__pressed_key_set.clear()
         self.__timer.stop()
 
     @classmethod
-    def clickLeft(cls):
+    def click_left(cls):
         """
         鼠标左键
         """
-        SystemBase.clickLeft()
+        SystemBase.click_left()
 
-    def clickRight(self):
+    def click_right(self):
         """
         鼠标右键
         """
-        SystemBase.clickRight()
-        self.selectItem()
+        SystemBase.click_right()
+        self.select_item()
 
-    def taskToggle(self):
+    def task_toggle(self):
         """
         Windows 任务切换
         """
-        self.__keyboardInterceptor.pause()
-        SystemBase.keyDown("alt")
+        self.__keyboard_interceptor.pause()
+        SystemBase.key_down("alt")
         SystemBase.hotkey("tab")
-        self.__stopSet.add(164)
-        while 164 in self.__stopSet or 165 in self.__stopSet:
+        self.__stop_set.add(164)
+        while 164 in self.__stop_set or 165 in self.__stop_set:
             sleep(0.1)
             continue
-        SystemBase.keyUp("alt")
-        self.__timer = Timer(self.__normalTimeout)
+        SystemBase.key_up("alt")
+        self.__timer = Timer(self.__normal_timeout)
         self.__timer.start()
-        self.__stopSet.clear()
-        self.__keyboardInterceptor.goon()
+        self.__stop_set.clear()
+        self.__keyboard_interceptor.goon()
 
-    def tabToggle(self):
+    def tab_toggle(self):
         """
         Windows Tab 切换
         """
-        self.__keyboardInterceptor.pause()
-        SystemBase.keyDown("ctrl")
+        self.__keyboard_interceptor.pause()
+        SystemBase.key_down("ctrl")
         SystemBase.hotkey("tab")
-        self.__stopSet.add(162)
-        while 162 in self.__stopSet or 163 in self.__stopSet:
+        self.__stop_set.add(162)
+        while 162 in self.__stop_set or 163 in self.__stop_set:
             sleep(0.1)
             continue
-        SystemBase.keyUp("ctrl")
-        self.__timer = Timer(self.__normalTimeout)
+        SystemBase.key_up("ctrl")
+        self.__timer = Timer(self.__normal_timeout)
         self.__timer.start()
-        self.__stopSet.clear()
-        self.__keyboardInterceptor.goon()
+        self.__stop_set.clear()
+        self.__keyboard_interceptor.goon()
 
-    def windowMenu(self):
+    def window_menu(self):
         """
         打开窗口菜单
         """
-        self.__pressKey("alt", "space")
-        self.selectItem()
+        self.__press_key("alt", "space")
+        self.select_item()
 
-    def goZero(self):
+    def go_zero(self):
         """
         光标回到原点
         """
-        SystemBase.moveTo(0, 0)
+        SystemBase.move_to(0, 0)
 
-    def goCenter(self):
+    def go_center(self):
         """
         光标回到中心
         """
-        width, height = SystemBase.getScreenSize()
-        SystemBase.moveTo(width / 2, height / 2)
+        width, height = SystemBase.get_screen_size()
+        SystemBase.move_to(width / 2, height / 2)
 
-    def goEnd(self):
+    def go_end(self):
         """
         回到最大点
         """
-        screenWidth, screenHeight = SystemBase.getScreenSize()
-        SystemBase.moveTo(screenWidth, screenHeight)
+        screen_width, screen_height = SystemBase.get_screen_size()
+        SystemBase.move_to(screen_width, screen_height)
 
-    def goTop(self):
+    def go_top(self):
         """
         回到顶部
         """
-        width, height = SystemBase.getPosition()
-        SystemBase.moveTo(x=width, y=self.__screenHeight * 0.01)
+        width, height = SystemBase.get_position()
+        SystemBase.move_to(x=width, y=self.__screen_height * 0.01)
 
-    def goMiddle(self):
+    def go_middle(self):
         """
         回到中间
         """
-        width, height = SystemBase.getPosition()
-        SystemBase.moveTo(x=width, y=self.__screenHeight / 2)
+        width, height = SystemBase.get_position()
+        SystemBase.move_to(x=width, y=self.__screen_height / 2)
 
-    def goBottom(self):
+    def go_bottom(self):
         """
         回到底部
         """
-        width, height = SystemBase.getPosition()
-        SystemBase.moveTo(x=width, y=self.__screenHeight * 0.99)
+        width, height = SystemBase.get_position()
+        SystemBase.move_to(x=width, y=self.__screen_height * 0.99)
 
-    def selectItem(self):
+    def select_item(self):
         """
         用于在菜单中选择的模式
         """
@@ -840,62 +840,62 @@ class Controller(Thread):
         """
         下一个
         """
-        self.__moveKeySet.add(Action.NEXT)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.NEXT)
+        self.__move_signal.set()
 
     def previous(self):
         """
         上一个
         """
-        self.__moveKeySet.add(Action.PREVIOUS)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.PREVIOUS)
+        self.__move_signal.set()
 
     def forward(self):
         """
         向前
         """
-        self.__moveKeySet.add(Action.FORWARD)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.FORWARD)
+        self.__move_signal.set()
 
     def backward(self):
         """
         后退
         """
-        self.__moveKeySet.add(Action.BACKWARD)
-        self.__moveSignal.set()
+        self.__move_key_set.add(Action.BACKWARD)
+        self.__move_signal.set()
 
-    def confirmSelect(self):
+    def confirm_select(self):
         """
         确认选项
         """
-        self.__pressKey("enter")
+        self.__press_key("enter")
 
-    def quitSelect(self):
+    def quit_select(self):
         """
         退出选择模式
         """
         self.__mode = Mode.NORMAL
 
-    def quitSelectWithESC(self):
+    def quit_select_with_esc(self):
         """
         退出选择模式, 并按下 ESC 键
         """
-        self.__pressKey("esc")
+        self.__press_key("esc")
         self.__mode = Mode.NORMAL
 
     @classmethod
-    def clickMiddle(cls):
+    def click_middle(cls):
         """
         鼠标中键
         """
-        SystemBase.clickMiddle()
+        SystemBase.click_middle()
 
-    def __getKeyAction(self, action: Tuple[int, Tuple[int, int, int]]) -> list:
+    def __get_key_action(self, action: Tuple[int, Tuple[int, int, int]]) -> list:
         """
         获得 key 的按键序列
         """
         if action is None:
-            action = self.__actionQueue.get()
+            action = self.__action_queue.get()
         result = []
         if action[1][0]:
             result.append("ctrl")
@@ -903,48 +903,48 @@ class Controller(Thread):
             result.append("shift")
         if action[1][2]:
             result.append("alt")
-        result.append(KeyTranslator.vk2Char(action).lower())
+        result.append(KeyTranslator.vk_2_char(action).lower())
         return result
 
-    def __pressKey(self, *keys: str, times: int = 1):
-        self.__keyboardInterceptor.pause()
+    def __press_key(self, *keys: str, times: int = 1):
+        self.__keyboard_interceptor.pause()
         SystemBase.hotkey(*keys, times=times)
-        self.__keyboardInterceptor.goon()
+        self.__keyboard_interceptor.goon()
 
-    def __matchCommand(self, first: str, second: str) -> str:
+    def __match_command(self, first: str, second: str) -> str:
         """
         通过递归的方式匹配按键映)射
         """
         temp = first + second
         pattern = re.compile('^"|\'' + temp)
-        cmdList = [cmd for cmd in self.__keyMaps[self.__mode].keys()]
-        result = pattern.findall(str(cmdList))
+        cmd_list = [cmd for cmd in self.__key_maps[self.__mode].keys()]
+        result = pattern.findall(str(cmd_list))
         if len(result) > 1:
-            key = KeyTranslator.getKeyValue(self.__actionQueue.get())
-            return self.__matchCommand(temp, key)
+            key = KeyTranslator.get_key_value(self.__action_queue.get())
+            return self.__match_command(temp, key)
         return temp
 
-    def __getCommand(self) -> str:
+    def __get_command(self) -> str:
         """
         从用户输入获取命令
         """
         cmd = ""
         self.__toast.show()
         while True:
-            key = self.__actionQueue.get()
-            keyChar = KeyTranslator.vk2Char(key)
-            if keyChar == "\r":
+            key = self.__action_queue.get()
+            key_char = KeyTranslator.vk_2_char(key)
+            if key_char == "\r":
                 self.__toast.send("")
                 break
-            if keyChar == "\x08":
+            if key_char == "\x08":
                 cmd = cmd[0:len(cmd) - 1]
             else:
-                cmd = cmd + keyChar
+                cmd = cmd + key_char
             self.__toast.send(cmd)
         self.__toast.hide()
         return cmd
 
-    @execInThread
+    @exec_in_thread
     def __msg(self, msg: str):
         """
         显示一条提示信息

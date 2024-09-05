@@ -1,18 +1,18 @@
 from threading import Thread
-from tkinter import *
+from tkinter import Tk, Label
 
 
 # 桌面提示 Toast
 class Toast(Thread):
-    def __init__(self, positionX: int = 0, positionY: int = 0, width: int = 100, height: int = 100):
+    def __init__(self, position_x: int = 0, position_y: int = 0, width: int = 100, height: int = 100):
         super().__init__()
         self.alpha = 0.6
         self.bg = 'gray'
         self.fg = 'black'
         self.font = 'Consolas'
         self.prefix = ':'
-        self.positionX = positionX
-        self.positionY = positionY
+        self.position_x = position_x
+        self.position_y = position_y
         self.width = width
         self.height = height
         self.lb = None
@@ -22,7 +22,7 @@ class Toast(Thread):
 
     def run(self):
         self.geometry = r'' + str(self.width) + 'x' + str(self.height) + \
-                        '+' + str(self.positionX) + '+' + str(self.positionY)
+                        '+' + str(self.position_x) + '+' + str(self.position_y)
         self.tk = Tk()
         self.lb = Label(self.tk, font=self.font, fg=self.fg, bg=self.bg)
         self.lb.config(text=self.prefix)
