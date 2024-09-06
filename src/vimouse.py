@@ -384,11 +384,11 @@ class ActionHandler(Thread):
                 return
 
             # 如果类型是 1, 代表移动, 调用时需要附加速度
-            if action.actionType == 1:
+            if action.action_type == 1:
                 action.exec(action.param[0], self.__speed_record.speed())
 
             # 如果类型是 2, 代表按键映射
-            if action.actionType == 2:
+            if action.action_type == 2:
                 action.exec(action.param[0])
                 sleep(0.1)
 
