@@ -868,6 +868,7 @@ class Controller(Thread):
         """
         确认选项
         """
+        self.__mode = Mode.NORMAL
         self.__press_key("enter")
 
     def quit_select(self):
