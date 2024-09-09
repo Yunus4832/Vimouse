@@ -461,8 +461,8 @@ class Controller(Thread):
                 "h": self.backward,
                 "l": self.forward,
                 "\r": self.confirm_select,
-                "q": self.quit_select,
-                "_s_q": self.quit_select_with_esc
+                "q": self.quit_select_with_esc,
+                "_s_q": self.quit_select
             },
             Mode.VISUAL: {
                 "'": self.go_mark,
