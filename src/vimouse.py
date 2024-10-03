@@ -230,18 +230,18 @@ class SystemBase:
         pyautogui.middleClick()
 
     @classmethod
-    def press_primary(cls) -> None:
+    def mouse_down(cls, btn: str = "left") -> None:
         """
         按住鼠标左键
         """
-        pyautogui.mouseDown()
+        pyautogui.mouseDown(button=btn)
 
     @classmethod
-    def release_primary(cls) -> None:
+    def mouse_up(cls, btn: str = "left") -> None:
         """
         释放鼠标左键
         """
-        pyautogui.mouseUp()
+        pyautogui.mouseUp(button=btn)
 
     @classmethod
     def yank(cls) -> None:
@@ -445,6 +445,7 @@ class Controller(Thread):
                 "i": self.insert,
                 "_s_i": self.insert_with_click,
                 "v": self.visual,
+                "_c_v": self.drag,
                 "s": self.select_item,
                 "_a_ ": self.window_menu,
                 "gg": self.go_zero,
@@ -481,6 +482,7 @@ class Controller(Thread):
                 "_a_a": self.speed_max,
                 "a": self.speed_down,
                 "v": self.visual,
+                "_c_v": self.drag,
                 "gg": self.go_zero,
                 "gc": self.go_center,
                 "ge": self.go_end,
@@ -692,14 +694,26 @@ class Controller(Thread):
 
     def visual(self):
         """
-        进入可视模式
+        进入可视模式, 框选
         """
         if self.__mode != Mode.VISUAL:
             self.__mode = Mode.VISUAL
-            SystemBase.press_primary()
+            SystemBase.mouse_down()
             return
-        SystemBase.release_primary()
+        SystemBase.mouse_up()
         self.__mode = Mode.NORMAL
+
+    def drag(self):
+        """
+        进入可视模式，拖动
+        """
+        if self.__mode != Mode.VISUAL:
+            self.__mode = Mode.VISUAL
+            SystemBase.mouse_down(btn="middle")
+            return
+        SystemBase.mouse_up("middle")
+        self.__mode = Mode.NORMAL
+
 
     def insert(self):
         """
