@@ -714,7 +714,6 @@ class Controller(Thread):
         SystemBase.mouse_up("middle")
         self.__mode = Mode.NORMAL
 
-
     def insert(self):
         """
         进入插入模式
