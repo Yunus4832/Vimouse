@@ -536,7 +536,7 @@ class Controller(Thread):
         self.__toast.start()
         while self.__is_running:
             if self.__keyboard_interceptor.is_enable():
-                if self.__timer.isRun():
+                if self.__timer.is_run():
                     if self.__mode == Mode.NORMAL or self.__mode == Mode.VISUAL:
                         key = KeyTranslator.get_key_value(self.__action_queue.get())
                         cmd = self.__match_command("", key)

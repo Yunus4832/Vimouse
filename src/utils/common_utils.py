@@ -89,7 +89,7 @@ class Timer(Thread):
         self.__count = self.__timeout
         self.__timer_semaphore.release()
 
-    def isRun(self) -> bool:
+    def is_run(self) -> bool:
         return self.__is_running
 
     def stop(self) -> None:
